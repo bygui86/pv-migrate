@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	log "github.com/sirupsen/logrus"
-	"github.com/urfave/cli/v2"
 	"io/ioutil"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/meta"
@@ -148,10 +147,6 @@ func getNodeInternalIP(node *corev1.Node) (string, error) {
 }
 
 func createKindTestContext() *pvMigrateTestContext {
-	cli.OsExiter = func(code int) {
-		// preventing urfave/cli to call os.Exit
-		log.WithField("code", code).Info("os.Exit is called")
-	}
 	kindTestContext, err := setupKindCluster(testClusterName, kindImage)
 	if err != nil {
 		log.WithError(err).Error("failed to setup kind cluster")

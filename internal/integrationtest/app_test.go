@@ -59,7 +59,7 @@ func TestSameNS(t *testing.T) {
 
 	cliApp := app.New("", "")
 	args := []string{
-		os.Args[0], migrateCommand,
+		migrateCommand,
 		sourceKubeconfigParamKey, ctx.kubeconfig,
 		sourceNsParamKey, sourceNs,
 		destKubeconfigParamKey, ctx.kubeconfig,
@@ -78,7 +78,8 @@ func TestSameNS(t *testing.T) {
 	_, _, err = execInPodWithPVC(ctx.kubeClient, ctx.config, destNs, dest, generateExtraDataShellCommand)
 	assert.NoError(t, err)
 
-	err = cliApp.Run(args)
+	cliApp.SetArgs(args)
+	err = cliApp.Execute()
 	assert.NoError(t, err)
 
 	stdout, stderr, err := execInPodWithPVC(ctx.kubeClient, ctx.config, destNs, dest, printDataUidGidContentShellCommand)
@@ -107,7 +108,7 @@ func TestNoChown(t *testing.T) {
 
 	cliApp := app.New("", "")
 	args := []string{
-		os.Args[0], migrateCommand,
+		migrateCommand,
 		sourceKubeconfigParamKey, ctx.kubeconfig,
 		sourceNsParamKey, sourceNs,
 		destKubeconfigParamKey, ctx.kubeconfig,
@@ -127,7 +128,8 @@ func TestNoChown(t *testing.T) {
 	_, _, err = execInPodWithPVC(ctx.kubeClient, ctx.config, destNs, dest, generateExtraDataShellCommand)
 	assert.NoError(t, err)
 
-	err = cliApp.Run(args)
+	cliApp.SetArgs(args)
+	err = cliApp.Execute()
 	assert.NoError(t, err)
 
 	stdout, stderr, err := execInPodWithPVC(ctx.kubeClient, ctx.config, destNs, dest, printDataUidGidContentShellCommand)
@@ -156,7 +158,7 @@ func TestSameNSDeleteExtraneousFiles(t *testing.T) {
 
 	cliApp := app.New("", "")
 	args := []string{
-		os.Args[0], migrateCommand,
+		migrateCommand,
 		sourceKubeconfigParamKey, ctx.kubeconfig,
 		sourceNsParamKey, sourceNs,
 		destKubeconfigParamKey, ctx.kubeconfig,
@@ -176,7 +178,8 @@ func TestSameNSDeleteExtraneousFiles(t *testing.T) {
 	_, _, err = execInPodWithPVC(ctx.kubeClient, ctx.config, destNs, dest, generateExtraDataShellCommand)
 	assert.NoError(t, err)
 
-	err = cliApp.Run(args)
+	cliApp.SetArgs(args)
+	err = cliApp.Execute()
 	assert.NoError(t, err)
 
 	stdout, stderr, err := execInPodWithPVC(ctx.kubeClient, ctx.config, destNs, dest, printDataContentShellCommand)
@@ -197,7 +200,7 @@ func TestMountedError(t *testing.T) {
 	destNs := sourceNs
 	cliApp := app.New("", "")
 	args := []string{
-		os.Args[0], migrateCommand,
+		migrateCommand,
 		sourceKubeconfigParamKey, ctx.kubeconfig,
 		sourceNsParamKey, sourceNs,
 		destKubeconfigParamKey, ctx.kubeconfig,
@@ -215,7 +218,8 @@ func TestMountedError(t *testing.T) {
 	_, err = startPodWithPVCMount(ctx.kubeClient, sourceNs, source)
 	assert.NoError(t, err)
 
-	err = cliApp.Run(args)
+	cliApp.SetArgs(args)
+	err = cliApp.Execute()
 	assert.Error(t, err)
 }
 
@@ -227,7 +231,7 @@ func TestIgnoreMounted(t *testing.T) {
 	destNs := sourceNs
 	cliApp := app.New("", "")
 	args := []string{
-		os.Args[0], migrateCommand,
+		migrateCommand,
 		sourceKubeconfigParamKey, ctx.kubeconfig,
 		sourceNsParamKey, sourceNs,
 		destKubeconfigParamKey, ctx.kubeconfig,
@@ -246,7 +250,8 @@ func TestIgnoreMounted(t *testing.T) {
 	_, err = startPodWithPVCMount(ctx.kubeClient, sourceNs, source)
 	assert.NoError(t, err)
 
-	err = cliApp.Run(args)
+	cliApp.SetArgs(args)
+	err = cliApp.Execute()
 	assert.NoError(t, err)
 
 	stdout, stderr, err := execInPodWithPVC(ctx.kubeClient, ctx.config, destNs, dest, printDataContentShellCommand)
@@ -263,7 +268,7 @@ func TestDifferentNS(t *testing.T) {
 	cliApp := app.New("", "")
 
 	args := []string{
-		os.Args[0], migrateCommand,
+		migrateCommand,
 		sourceKubeconfigParamKey, ctx.kubeconfig,
 		sourceNsParamKey, sourceNs,
 		destKubeconfigParamKey, ctx.kubeconfig,
@@ -280,7 +285,8 @@ func TestDifferentNS(t *testing.T) {
 	_, _, err = execInPodWithPVC(ctx.kubeClient, ctx.config, sourceNs, source, generateDataShellCommand)
 	assert.NoError(t, err)
 
-	err = cliApp.Run(args)
+	cliApp.SetArgs(args)
+	err = cliApp.Execute()
 	assert.NoError(t, err)
 
 	stdout, stderr, err := execInPodWithPVC(ctx.kubeClient, ctx.config, destNs, dest, printDataContentShellCommand)
@@ -305,7 +311,7 @@ func TestDifferentCluster(t *testing.T) {
 	cliApp := app.New("", "")
 
 	args := []string{
-		os.Args[0], migrateCommand,
+		migrateCommand,
 		sourceKubeconfigParamKey, ctx.kubeconfig,
 		sourceNsParamKey, sourceNs,
 		destKubeconfigParamKey, kubeconfigCopy,
@@ -322,7 +328,8 @@ func TestDifferentCluster(t *testing.T) {
 	_, _, err = execInPodWithPVC(ctx.kubeClient, ctx.config, sourceNs, source, generateDataShellCommand)
 	assert.NoError(t, err)
 
-	err = cliApp.Run(args)
+	cliApp.SetArgs(args)
+	err = cliApp.Execute()
 	assert.NoError(t, err)
 
 	stdout, stderr, err := execInPodWithPVC(ctx.kubeClient, ctx.config, destNs, dest, printDataContentShellCommand)

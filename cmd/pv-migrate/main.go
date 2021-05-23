@@ -28,8 +28,8 @@ func init() {
 }
 
 func main() {
-	cliApp := app.New(version, commit)
-	err := cliApp.Run(os.Args)
+	rootCmd := app.New(version, commit)
+	err := rootCmd.Execute()
 	if err != nil {
 		log.Fatal(err.Error())
 	}
