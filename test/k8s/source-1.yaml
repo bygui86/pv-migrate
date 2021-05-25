@@ -1,3 +1,37 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pv-migrate-test-source-1
+  namespace: pv-migrate-test-1
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pv-migrate-test-source-1
+  namespace: pv-migrate-test-1
+rules:
+  - apiGroups:
+      - policy
+    verbs:
+      - use
+    resources:
+      - podsecuritypolicies
+    resourceNames:
+      - pv-migrate-test
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pv-migrate-test-source-1
+  namespace: pv-migrate-test-1
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: pv-migrate-test-source-1
+subjects:
+  - kind: ServiceAccount
+    name: pv-migrate-test-source-1
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -14,6 +48,7 @@ spec:
       labels:
         app: pv-migrate-test-source-1
     spec:
+      serviceAccountName: pv-migrate-test-source-1
       terminationGracePeriodSeconds: 0
       containers:
         - name: pv-migrate-test-source-1

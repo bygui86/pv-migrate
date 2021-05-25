@@ -105,7 +105,7 @@ func createSshdPublicKeySecret(instanceId string, sourcePvcInfo *pvc.Info, publi
 	return secrets.Create(context.TODO(), &secret, metav1.CreateOptions{})
 }
 
-func PrepareSshdPod(instanceId string, sourcePvcInfo *pvc.Info, publicKeySecretName string, sshdImage string) *corev1.Pod {
+func PrepareSshdPod(instanceId string, sourcePvcInfo *pvc.Info, publicKeySecretName string, sshdImage string, svcAccName string) *corev1.Pod {
 	podName := "pv-migrate-sshd-" + instanceId
 	return &corev1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
@@ -114,6 +114,7 @@ func PrepareSshdPod(instanceId string, sourcePvcInfo *pvc.Info, publicKeySecretN
 			Labels:    k8s.ComponentLabels(instanceId, k8s.Sshd),
 		},
 		Spec: corev1.PodSpec{
+			ServiceAccountName: svcAccName,
 			Volumes: []corev1.Volume{
 				{
 					Name: "source-vol",

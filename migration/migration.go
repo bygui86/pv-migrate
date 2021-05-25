@@ -28,4 +28,6 @@ type Options struct {
 	IgnoreMounted         bool
 	NoChown               bool
 	KeyAlgorithm          string
+	SourceCreatePSP       bool
+	DestCreatePSP         bool
 }

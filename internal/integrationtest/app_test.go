@@ -9,6 +9,10 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+
+	// needed for k8s oidc and gcp auth
+	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
+	_ "k8s.io/client-go/plugin/pkg/client/auth/oidc"
 )
 
 const (

@@ -28,6 +28,8 @@ const (
 	FlagRsyncImage                = "rsync-image"
 	FlagSshdImage                 = "sshd-image"
 	FlagSSHKeyAlgorithm           = "ssh-key-algorithm"
+	FlagSourceCreatePSP           = "source-create-psp"
+	FlagDestCreatePSP             = "dest-create-psp"
 )
 
 func New(version string, commit string) *cli.App {
@@ -62,6 +64,8 @@ func New(version string, commit string) *cli.App {
 						IgnoreMounted:         c.Bool(FlagIgnoreMounted),
 						NoChown:               c.Bool(FlagNoChown),
 						KeyAlgorithm:          c.String(FlagSSHKeyAlgorithm),
+						SourceCreatePSP:       c.Bool(FlagSourceCreatePSP),
+						DestCreatePSP:         c.Bool(FlagDestCreatePSP),
 					}
 
 					strategies := strings.Split(c.String(FlagStrategies), ",")
@@ -166,6 +170,20 @@ func New(version string, commit string) *cli.App {
 						Aliases: []string{"a"},
 						Usage:   fmt.Sprintf("SSH key algorithm to be used. Valid values are %s", sshKeyAlgs),
 						Value:   rsync.Ed25519KeyAlgorithm,
+					},
+					&cli.BoolFlag{
+						Name:    FlagSourceCreatePSP,
+						Aliases: []string{"p"},
+						Usage: "Create PodSecurityPolicy and RBAC resources on the source side" +
+							" to be able to run as root in PSP-enabled clusters",
+						Value: false,
+					},
+					&cli.BoolFlag{
+						Name:    FlagDestCreatePSP,
+						Aliases: []string{"P"},
+						Usage: "Create PodSecurityPolicy and RBAC resources on the destination side" +
+							" to be able to run as root in PSP-enabled clusters",
+						Value: false,
 					},
 				},
 			},
